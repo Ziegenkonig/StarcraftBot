@@ -54,6 +54,9 @@
       <AdditionalDependencies>BWAPId.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /f /s /y "$(OutputPath)$(TargetFileName)" "$(SC_PATH)\bwapi-data\AI\"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -71,6 +74,9 @@
       <AdditionalLibraryDirectories>$(BW_API_PATH)\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>BWAPI.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /f /s /y "$(OutputPath)$(TargetFileName)" "$(SC_PATH)\bwapi-data\AI\"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Bot.h" />
