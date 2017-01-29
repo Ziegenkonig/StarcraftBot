@@ -2,6 +2,19 @@
 
 #include "Bot.h"
 
+// Variable to keep track of the number of barracks
+int barracks_count = 0;
+
+//Handles building a barracks as long as no barracks exist and there are enough minerals
+void buildBarracks(BWAPI::Unit u) {
+	if (u->isGatheringMinerals() && barracks_count < 1 && BWAPI::Broodwar->self()->minerals() >= BWAPI::UnitTypes::Terran_Barracks.mineralPrice() + 50){
+		//find a location for barracks and construct it
+		BWAPI::TilePosition buildPosition = BWAPI::Broodwar->getBuildLocation(BWAPI::UnitTypes::Terran_Barracks, u->getTilePosition());
+		u->build(BWAPI::UnitTypes::Terran_Barracks, buildPosition);
+		barracks_count++;
+	}
+}
+
 void BotAIModule::onStart() {
 	// Hello World!
 	BWAPI::Broodwar->sendText("Hello world!");
@@ -66,7 +79,12 @@ void BotAIModule::onFrame() {
 					}
 				}
 			}
+			else {
+				//Build barracks if possible
+				buildBarracks(u);
+			}
 		}
+		
 		// A resource depot is a Command Center, Nexus, or Hatchery
 		else if (u->getType().isResourceDepot()) {
 			// Order the depot to construct more workers! But only when it is idle.
@@ -82,7 +100,7 @@ void BotAIModule::onFrame() {
 
 				// Retrieve the supply provider type in the case that we have run out of supplies
 				BWAPI::UnitType supplyProviderType = u->getType().getRace().getSupplyProvider();
-				static int lastChecked = 0;
+				static int lastChecked = 0; 
 
 				// If we are supply blocked and haven't tried constructing more recently
 				if (lastErr == BWAPI::Errors::Insufficient_Supply &&
@@ -175,3 +193,4 @@ void BotAIModule::onSaveGame(std::string gameName) {
 void BotAIModule::onUnitComplete(BWAPI::Unit unit) {
 	BWAPI::Broodwar << unit->getType().getName() << " is completed." << std::endl;
 }
+
